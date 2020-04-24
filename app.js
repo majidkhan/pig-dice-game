@@ -8,19 +8,41 @@ GAME RULES:
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
+/*
+YOUR 3 CHALLENGES
+Change the game to follow these rules:
 
-var score, currentScore, activePlayer, gamePlaying;
+1. A player looses his ENTIRE score when he rolls two 6 in a row. After that, it's the next player's turn. (Hint: Always save the previous dice roll in a separate variable)
+2. Add an input field to the HTML where players can set the winning score, so that they can change the predefined score of 100. (Hint: you can read that value with the .value property in JavaScript. This is a good oportunity to use google to figure this out :)
+3. Add another dice to the game, so that there are two dices now. The player looses his current score when one of them is a 1. (Hint: you will need CSS to position the second dice, so take a look at the CSS code for the first one.)
+*/
+
+var score, currentScore, activePlayer, gamePlaying, diceSix;
 
 init();
 
 document.querySelector('.btn-roll').addEventListener( 'click', function() {
     if(gamePlaying) {
         var dice = Math.floor((Math.random() * 6) + 1);
+
         document.querySelector('.dice').src = 'dice-' + dice + '.png';
         document.querySelector('.dice').style.display = 'block';
         if ( dice !== 1) {
-            currentScore += dice;
-            document.getElementById('current-' + activePlayer).textContent = currentScore;    
+            if ( dice !== 6 ) {
+                currentScore += dice;
+                diceSix = 0;
+                document.getElementById('current-' + activePlayer).textContent = currentScore;        
+            } else if ( dice === 6 && diceSix === 0){
+                diceSix = 1;
+                currentScore += dice;
+                document.getElementById('current-' + activePlayer).textContent = currentScore;    
+            } else if ( dice === 6 && diceSix === 1 ) {
+                document.getElementById('current-' + activePlayer).textContent = 0; // empty the current score DOM element
+                document.getElementById('score-' + activePlayer).textContent = 0; // display score of the players                
+                currentScore = 0;
+                diceSix = 0;
+                passTurn();
+            }
         } else {
             passTurn();
         }    
@@ -52,6 +74,7 @@ document.querySelector('.btn-hold').addEventListener( 'click', function() {
 // function is called when pressing the hold button. 
 // function is called when Player get a dice of 1.
 function passTurn() {
+    diceSix = 0;
     currentScore = 0;   // passing turn to the other player, empty the currentScore 
     document.getElementById('current-' + activePlayer).textContent = currentScore; // empty the current score DOM element
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;   // switch the player when hold is clicked
@@ -71,6 +94,7 @@ function init() {
     currentScore = 0;
     activePlayer = 0;
     gamePlaying = true;
+    diceSix = 0;
 
     document.getElementById('name-0').textContent = 'Player 1'; // Update name of the player. It will replace 'Winner' to 'Player 1'
     document.getElementById('name-1').textContent = 'Player 2'; // Update name of the player. It will replace 'Winner' to 'Player 2'   
