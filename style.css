@@ -126,6 +126,25 @@ button:focus {
     outline: none;
 }
 
+input {
+    margin-left: 10px;
+    width: 50px;
+    line-height: 16px;
+    color: #EB4D4D;
+    background: none;
+    border: 1px solid #555;
+    text-transform: uppercase;
+}
+
+.set-winning-score {
+    position: absolute;
+    right: 25px;
+    font-family: Lato;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
 i {
     color: #EB4D4D;
     display: inline-block;
@@ -137,9 +156,12 @@ i {
     transition: margin 0.3s;
 }
 
-.btn-new { top: 45px;}
+.btn-new { top: 35px;}
+/*.btn-set-score { top: 70px;} */
 .btn-roll { top: 403px;}
 .btn-hold { top: 467px;}
+
+.set-winning-score { top: 35px; }
 
 .dice {
     position: absolute;
