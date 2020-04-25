@@ -17,37 +17,53 @@ Change the game to follow these rules:
 3. Add another dice to the game, so that there are two dices now. The player looses his current score when one of them is a 1. (Hint: you will need CSS to position the second dice, so take a look at the CSS code for the first one.)
 */
 
-var score, currentScore, activePlayer, gamePlaying, diceSix, winningScore;
+var score, currentScore, activePlayer, gamePlaying, isDiceSix, winningScore;
 
 init();
 
+// when the roll button is clicked, it calls an anonymous function. 
 document.querySelector('.btn-roll').addEventListener( 'click', function() {
     if(gamePlaying) {
         var dice = Math.floor((Math.random() * 6) + 1);
+        var dice1 = Math.floor((Math.random() * 6) + 1);
 
-        document.querySelector('.dice').src = 'dice-' + dice + '.png';
-        document.querySelector('.dice').style.display = 'block';
-        if ( dice !== 1) {
-            if ( dice !== 6 ) {
-                currentScore += dice;
-                diceSix = 0;
-                document.getElementById('current-' + activePlayer).textContent = currentScore;        
-            } else if ( dice === 6 && diceSix === 0){
-                diceSix = 1;
-                currentScore += dice;
-                document.getElementById('current-' + activePlayer).textContent = currentScore;    
-            } else if ( dice === 6 && diceSix === 1 ) {
-                document.getElementById('current-' + activePlayer).textContent = 0; // empty the current score DOM element
-                document.getElementById('score-' + activePlayer).textContent = 0; // display score of the players                
-                currentScore = 0;
-                diceSix = 0;
-                passTurn();
-            }
-        } else {
+        document.getElementById('dice-0').src = 'dice-' + dice + '.png';
+        document.getElementById('dice-1').src = 'dice-' + dice1 + '.png';
+        document.getElementById('dice-0').style.display = 'block';
+        document.getElementById('dice-1').style.display = 'block';
+        
+        // if one of the dice is 1, pass the turn else continue rolling
+        if (dice === 1 || dice1 === 1) {
             passTurn();
-        }    
+        } else {
+            rollDice(dice);
+            rollDice(dice1);    
+        }
     }
 });
+
+// the function roll a dice and add the total to current score
+function rollDice(theDice) {
+    if ( theDice !== 1 ) {
+        if ( theDice !== 6 ) {
+            currentScore += theDice;
+            isDiceSix = 0;
+            document.getElementById('current-' + activePlayer).textContent = currentScore;        
+        } else if ( theDice === 6 && isDiceSix === 0){
+            isDiceSix = 1;
+            currentScore += theDice;
+            document.getElementById('current-' + activePlayer).textContent = currentScore;    
+        } else if ( theDice === 6 && isDiceSix === 1 ) {
+            document.getElementById('current-' + activePlayer).textContent = 0; // empty the current score DOM element
+            document.getElementById('score-' + activePlayer).textContent = 0; // display score of the players                
+            currentScore = 0;
+            isDiceSix = 0;
+            passTurn();
+        }
+    } else {
+        passTurn();
+    }
+} 
 
 document.querySelector('.btn-hold').addEventListener( 'click', function() {
     if (gamePlaying) {
@@ -58,7 +74,8 @@ document.querySelector('.btn-hold').addEventListener( 'click', function() {
         //  
         if( score[activePlayer] >= winningScore ) {
             document.getElementById('name-' + activePlayer).textContent = 'Winner'; // replacing player name with the Winner text
-            document.querySelector('.dice').style.display = 'none'; // hide dice
+            document.getElementById('dice-0').style.display = 'none'; // hide dice 
+            document.getElementById('dice-1').style.display = 'none'; // hide dice     
             document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');   // 
             document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
     
@@ -74,26 +91,25 @@ document.querySelector('.btn-hold').addEventListener( 'click', function() {
 // function is called when pressing the hold button. 
 // function is called when Player get a dice of 1.
 function passTurn() {
-    diceSix = 0;
+    isDiceSix = 0;
     currentScore = 0;   // passing turn to the other player, empty the currentScore 
     document.getElementById('current-' + activePlayer).textContent = currentScore; // empty the current score DOM element
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;   // switch the player when hold is clicked
-    document.querySelector('.dice').style.display = 'none';
+    document.getElementById('dice-0').style.display = 'none'; // hide dice 
+    document.getElementById('dice-1').style.display = 'none'; // hide dice     
     document.querySelector('.player-0-panel').classList.toggle('active');
     document.querySelector('.player-1-panel').classList.toggle('active');
 }
 
+// calls the init() for a new game
 document.querySelector('.btn-new').addEventListener( 'click', init );
 
+// Set Winning score
 document.querySelector('input').addEventListener( 'input', function() {
     winningScore = document.querySelector('input').value;
-
 });
 
 
-function winningScoreLimit() {
-
-}
 
 // initialize variables and game states.
 // The function is called when;
@@ -104,12 +120,13 @@ function init() {
     currentScore = 0;
     activePlayer = 0;
     gamePlaying = true;
-    diceSix = 0;
+    isDiceSix = 0;
 
     document.getElementById('name-0').textContent = 'Player 1'; // Update name of the player. It will replace 'Winner' to 'Player 1'
     document.getElementById('name-1').textContent = 'Player 2'; // Update name of the player. It will replace 'Winner' to 'Player 2'   
     
-    document.querySelector('.dice').style.display = 'none'; // hide dice 
+    document.getElementById('dice-0').style.display = 'none'; // hide dice 
+    document.getElementById('dice-1').style.display = 'none'; // hide dice     
     document.getElementById('current-0').textContent = 0;   // reset the score of the last turns. It is the score that is not hold yet. 
     document.getElementById('current-1').textContent = 0;
     document.getElementById('score-0').textContent = 0; // reset the score of each player
